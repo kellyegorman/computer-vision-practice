@@ -24,7 +24,25 @@ while True:
         #draw bounding box for eyes
         for (ex, ey, ew, eh) in eyes:
             img = cv2.rectangle(img, (ex, ey), (ex + ew, ey + eh), (255, 0, 0), 3)
+        
+        # detect if eyes are looking left/right/up/down/center??
+        for (ex, ey, ew, eh) in eyes:
+            eye_center = (ex + ew // 2, ey + eh // 2)
+            radius = int(round((ew + eh) * 0.25))
+            img = cv2.circle(img, eye_center, radius, (255, 0, 255), 2)
+            direction = ""
 
+            # FIX ME: always says center??
+            if eye_center[0] < ex + ew // 3:
+                direction = "Left"
+            elif eye_center[0] > ex + 2 * ew // 3:
+                direction = "Right"
+            else:
+                direction = "Center"
+
+            # write above the eye box what direction the eye is looking
+            cv2.putText(img, direction, (ex, ey - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
+    
     cv2.imshow('face_detect', img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
